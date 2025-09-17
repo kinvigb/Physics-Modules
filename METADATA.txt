@@ -1,0 +1,48 @@
+Hamiltonians:
+
+	oned_h(oned_h(structure ,N , inpt=None, oupt=None,  A=(1/50), B=(1/93), Zin=(1/50), Zout=(1/50),looped=False, site_con = False, site = 0, Zsite = 1/50)
+
+		This function requires inputs of structure (list) and N (number of connections/cables), it creates a Hamiltonian for a 1D structures, and can include optional arguments for input and output sites, and 
+		looping the structure. It currently can only take 2 values for the impedances, A and B, and by default these are set to the two impedances of RG58 and RG62 cables respectively. It returns two values, the adjancy matrix,
+		and the scaled Hamiltonian.
+		Site_con allows us to add an extra connection so we can inclue for example a load or something to that effect.
+		Looping the structure may require extra code as it removes a single site so any loops or indexing may be effected.
+	
+	bdg_h(i, N, u, t, d)
+		This functions requires a positonal argument 'i', length argument, N, and hopping terms, u, t, d, and then generates a Bogliobov de-Gennes Hamiltonian, it then returns this Hamiltonian with an applied scaling.
+
+	H_Graphene(n, m)
+
+		Generates a Hamiltonian for a sheet of graphene with n rows and m columns - returns both the hamiltonian and an array with the scaling values for each site.
+
+
+
+Structure Generator:
+	
+	Currently this module only works for 1D structures.
+
+	qc(length, fo='B')
+	
+		This defines a quasi crystal structure for a given length and f0 defines the starting cable type, which typically is a B type and hence is defined with a default value.
+
+	rand(length)
+		
+		Generates a structure with random hopping elements for a given length
+
+	cst(length)
+
+		Generates a simple system with only a single hopping term for all cables at a given length.
+
+	periodic(length)
+
+		Generates a periodic system (ABABAB...) for a given length
+
+	random_swap(input_list, swap_count)
+
+		will random swich cable types for a given number of cables.
+
+SMF:
+SMF is a package for functions related to generating and using scattering matrices.
+	D2_RHStar(A, B)
+		
+		Simply multiplies 2x2 scattering matrices together for a 1D system.
