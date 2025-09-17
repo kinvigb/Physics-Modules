@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "my_custom_library"
+name = "physics_modules"
 version = "0.0.1"
 authors = [
-  { name="Your Name", email="you@example.com" },
+  { name="Ben Kinvig", email="bckinvig1@sheffield.ac.uk" },
 ]
 description = "A short description of my custom library."
