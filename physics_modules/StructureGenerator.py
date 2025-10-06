@@ -33,7 +33,7 @@ def rand_sub_quasi_L(length):
     chain = ""
     while len(chain) < length:
         chain += random.choice(blocks)
-    return chain[:length]
+    return [chain[:length]]
     
 def cst(length):
     length = int(round((1 / np.sqrt(5)) * (((1 + np.sqrt(5)) / 2) ** (length + 1) - ((1 - np.sqrt(5)) / 2) ** (length + 1))))
