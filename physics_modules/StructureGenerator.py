@@ -27,7 +27,13 @@ def rand_L(length):
     structure = [random.choice(['A', 'B']) for _ in range(length)]
     structure = [''.join(structure)]
     return structure
-    
+
+def rand_sub_quasi_L(length):
+    blocks = ['ABA', 'ABAAB']
+    chain = ""
+    while len(chain) < length:
+        chain += random.choice(blocks)
+    return chain[:length]
     
 def cst(length):
     length = int(round((1 / np.sqrt(5)) * (((1 + np.sqrt(5)) / 2) ** (length + 1) - ((1 - np.sqrt(5)) / 2) ** (length + 1))))
