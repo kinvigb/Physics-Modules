@@ -28,8 +28,7 @@ def rand_L(length):
     structure = [''.join(structure)]
     return structure
 
-def rand_sub_quasi_L(length):
-    blocks = ['ABA', 'ABAAB']
+def block_rand(length, blocks = ['ABA', 'ABAAB']):
     chain = ""
     while len(chain) < length:
         chain += random.choice(blocks)
@@ -45,6 +44,11 @@ def periodic(length):
     structure = ['AB' * (length//2)] if length % 2 == 0 else ['AB' * (length//2) + 'A']
     return structure
 
+def block_periodic(length, block):
+    block_length = len(block)
+    int_multiplier = int(np.ceil(length/block_length))
+    structure = [block * int_multiplier]
+    return structure[:length]
 
 def random_swap(input_list, swap_count):
     if swap_count == 0:
@@ -130,26 +134,20 @@ def phason_flip(input_list, sym_pres, flip_count, is_looped=False):
     for _ in range(flip_count):
         chars = list(current_string)
         
-        # --- Step 1: Find all possible swaps (now includes looped case) ---
         potential_swap_indices = []
         for i in range(n - 1):
             if chars[i] != chars[i+1]:
                 potential_swap_indices.append(i)
-        
-        # NEW: If looped, check for a swap between the last and first characters.
+
         if is_looped and n > 1 and chars[n-1] != chars[0]:
-            # Use n-1 as a special index for the wrap-around swap.
             potential_swap_indices.append(n-1)
 
         if not potential_swap_indices:
             break
-
-        # --- Step 2: Filter swaps based on the sym_pres rule ---
         valid_swap_indices = []
         for index in potential_swap_indices:
             temp_chars = chars[:]
-            
-            # NEW: Handle the wrap-around swap for the temporary string.
+
             if is_looped and index == n - 1:
                 temp_chars[index], temp_chars[0] = temp_chars[0], temp_chars[index]
             else:
@@ -157,10 +155,8 @@ def phason_flip(input_list, sym_pres, flip_count, is_looped=False):
             
             temp_string = "".join(temp_chars)
 
-            # Check for the pattern within the string
             has_pattern = "AAA" in temp_string or "BB" in temp_string
             
-            # NEW: If looped, check for wrap-around patterns like A...AA or BB...B
             if not has_pattern and is_looped and n >= 3:
                 if (temp_string[-1] == temp_string[0] == temp_string[1]) or \
                    (temp_string[-2] == temp_string[-1] == temp_string[0]):
@@ -171,11 +167,9 @@ def phason_flip(input_list, sym_pres, flip_count, is_looped=False):
             elif not sym_pres and has_pattern:
                 valid_swap_indices.append(index)
 
-        # --- Step 3: Execute a random valid swap ---
         if valid_swap_indices:
             chosen_index = random.choice(valid_swap_indices)
             
-            # NEW: Handle the wrap-around swap execution.
             if is_looped and chosen_index == n - 1:
                 chars[chosen_index], chars[0] = chars[0], chars[chosen_index]
             else:
