@@ -23,10 +23,25 @@ def s(A, B):
     except Exception as e:
         raise RuntimeError(f"An unexpected error occurred: {e}")
 
-
+def n_dim_scatter_junction(n, w, Z=50, Z0=50):
+    d1 = range(n)
+    d2=d1
     
+    Ga = ( Z * np.cos(w) + 1j * Z0 * np.sin(w) ) /  ( Z * np.cos(w) - 1j * Z0 * np.sin(w) )
+    Gb = ( Z0 * np.cos(w) + 1j * Z * np.sin(w) ) /  ( Z0 * np.cos(w) - 1j * Z * np.sin(w) )
+    b_list = []
+    
+    for i in d1:
+        b = np.zeros(n, dtype=complex)
+        for j in d2:
+            if j == i:
+                b[j] = ( Ga + (1-n) * Gb ) / (n) 
+            else:
+                b[j] = ( Ga + Gb ) / (n)
         
-
+        b_list.append(b)
+        
+    return np.array(b_list)
 
 
 
@@ -41,3 +56,5 @@ def s(A, B):
 
     
 # S = D2_RHStar(A, B)
+
+# S, debug = n_dim_scatter_junction(3,np.pi/3)
