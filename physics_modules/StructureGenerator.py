@@ -1,6 +1,22 @@
 import random
 import numpy as np
 
+def pl_numbers(n):
+    if n <= 0:
+        return 1 
+    elif n == 1:
+        return 1
+    else:
+        return 2*pl_numbers(n-1) + pl_numbers(n-2)
+
+def fibonacci(n):
+    if n <= 0:
+        return 1 
+    elif n == 1:
+        return 1
+    else:
+        return fibonacci(n-1) + fibonacci (n-2)
+
 def qc_gm(length,f0='B'):
     structure = [f0]
     for i in range(length):
