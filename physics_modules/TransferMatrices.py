@@ -1,7 +1,6 @@
 import numpy as np
 
 def find_ensemble_resonances_optimized(structure_ensemble, A, B, w_range, looped=False, loss=0, threshold=1e-7):
-    # Store only the previous metric for each structure, initialized to None.
     prev_metrics = {struct: None for struct in structure_ensemble}
     all_resonance_frequencies = []
 
@@ -32,7 +31,6 @@ def find_ensemble_resonances_optimized(structure_ensemble, A, B, w_range, looped
                 if prev_metric * current_metric < 0 and \
                    (abs(prev_metric) > threshold or abs(current_metric) > threshold):
                     
-                    # Use linear interpolation for a more accurate peak location
                     if current_metric != prev_metric:
                         w_prev = w_range[i-1]
                         w_curr = w_range[i]

@@ -15,15 +15,6 @@ def oned_h(structure ,N , inpt=None, oupt=None,  A=(1/50), B=(1/93), C=(1/75) , 
         H = np.zeros((N+1,N+1), dtype = complex)
         for i in range(N):
             i=int(i)
-            # if i>0 and i<N-1: 
-            #     H[i,i+1] = M[i,i+1]/(np.sqrt(M[i+1,i+2]+M[i+1,i])*np.sqrt(M[i,i+1]+M[i,i-1]))
-            #     H[i+1,i] = H[i,i+1]
-            # elif i==0:
-            #     H[i,i+1] = M[i,i+1]/(np.sqrt(M[i+1,i+2]+M[i+1,i])*np.sqrt(M[i,i+1]))
-            #     H[i+1,i] = H[i,i+1]
-            # elif i==N-1:
-            #     H[i,i+1] = M[i,i+1]/(np.sqrt(M[i,i+1])*np.sqrt(M[i+1,i]+M[i,i-1]))
-            #     H[i+1,i] = H[i,i+1]
             H[i,i+1] = M[i,i+1]/( np.sqrt(sum(M[i+1,:])) * np.sqrt(sum(M[:,i])) )
             H[i+1,i] = H[i,i+1]
                 
@@ -75,19 +66,6 @@ def oned_h(structure ,N , inpt=None, oupt=None,  A=(1/50), B=(1/93), C=(1/75) , 
         H = np.zeros((N,N), dtype = complex)
         for i in range(N):
             i=int(i)
-        
-            # if i>0 and i<N-2: 
-            #     H[i,i+1] = M[i,i+1]/(np.sqrt(M[i+1,i+2]+M[i+1,i])*np.sqrt(M[i,i+1]+M[i,i-1]))
-            #     H[i+1,i] = H[i,i+1]
-            # elif i==0:
-            #     H[i,i+1] = M[i,i+1]/(np.sqrt(M[i+1,i+2]+M[i+1,i])*np.sqrt(M[i,i+1]+M[i,N-1]))
-            #     H[i+1,i] = H[i,i+1]
-            # elif i==N-2:
-            #     H[i,i+1] = M[i,i+1]/(np.sqrt(M[i,i+1]+M[i+1,0])*np.sqrt(M[i+1,i]+M[i,i-1]))
-            #     H[i+1,i] = H[i,i+1]
-            # elif i==N-1:
-            #     H[i,0] = M[i,0]/(np.sqrt(M[0,1]+M[0,i])*np.sqrt(M[i,0]+M[i,i-1]))
-            #     H[0,i] = H[i,0]
             if i==N-1:
                 H[i,0] = M[i,0]/( np.sqrt(sum(M[i,:])) * np.sqrt(sum(M[:,i])) )
                 H[0,i] = H[i,0]
@@ -153,7 +131,7 @@ def bdg_h_l(i, N, u, t, d):
         Hbdg[i+1, i+1] = -1*sig_n*u*sig_n
     
         if i+3 <= N:
-            Hbdg[i, i+2] = sig_n*t[ipos]*sig_n1          #first row 3rd column ...
+            Hbdg[i, i+2] = sig_n*t[ipos]*sig_n1         
             Hbdg[i+1, i+3] = -1*sig_n*t[ipos]*sig_n1
     
             Hbdg[i, i+3] = sig_n*d[ipos]*sig_n1
@@ -199,7 +177,7 @@ def bdg_h( N, u, t, d):
         Hbdg[i+1, i+1] = -1*sig_n*u*sig_n
     
         if i+3 <= N:
-            Hbdg[i, i+2] = sig_n*t*sig_n1          #first row 3rd column ...
+            Hbdg[i, i+2] = sig_n*t*sig_n1         
             Hbdg[i+1, i+3] = -1*sig_n*t*sig_n1
     
             Hbdg[i, i+3] = sig_n*d*sig_n1
@@ -216,7 +194,7 @@ def bdg_h( N, u, t, d):
     return Hbdg
 
 
-def H_Graphene(n, m): #creates the basic adjacency matrix for graphene with n rows and m columns 
+def H_Graphene(n, m): 
     total_atoms = n * m
     
     adjacency_matrix = np.zeros((total_atoms, total_atoms), dtype=float)
