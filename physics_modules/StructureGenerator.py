@@ -98,23 +98,13 @@ def random_swap_c(input_list, swap_count):
 
     input_string = input_list[0]
     input_chars = list(input_string)
-
-    indices_a = [i for i, x in enumerate(input_chars) if x == 'A']
-    indices_b = [i for i, x in enumerate(input_chars) if x == 'B']
-
+    
+    letters = ['A', 'B', 'C']
+    
     for _ in range(swap_count):
-        if not indices_a or not indices_b:  # Check if either list is empty
-            break
-        if random.choice([True, False]):
-            index_to_swap = random.choice(indices_a)
-            input_chars[index_to_swap] = 'C'
-            indices_a.remove(index_to_swap)
-            indices_b.append(index_to_swap)
-        else:
-            index_to_swap = random.choice(indices_b)
-            input_chars[index_to_swap] = 'C'
-            indices_b.remove(index_to_swap)
-            indices_a.append(index_to_swap)
+        idx = random.randrange(len(input_chars))
+        new_char = random.choice([c for c in letters if c != input_chars[idx]])
+        input_chars[idx] = new_char
 
     return [''.join(input_chars)]
 
