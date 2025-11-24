@@ -32,6 +32,14 @@ def qc_sm(length,f0='B'):
         fn = ''.join(['AAB' if ch == 'A' else 'A' for ch in fo])
         structure.append(fn)
     return structure
+
+def qc_np(length,f0='B'):
+    structure = [f0]
+    for i in range(length):
+        fo = structure[i]
+        fn = ''.join(['ABBB' if ch == 'A' else 'A' for ch in fo])
+        structure.append(fn)
+    return structure
         
 def rand(length):
     length = int(round((1 / np.sqrt(5)) * (((1 + np.sqrt(5)) / 2) ** (length + 1) - ((1 - np.sqrt(5)) / 2) ** (length + 1))))

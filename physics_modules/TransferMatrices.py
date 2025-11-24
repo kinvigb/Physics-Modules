@@ -1,5 +1,7 @@
 import numpy as np
 
+
+
 def find_ensemble_resonances_optimized(structure_ensemble, A, B, w_range, looped=False, loss=0, threshold=1e-7):
     prev_metrics = {struct: None for struct in structure_ensemble}
     all_resonance_frequencies = []
