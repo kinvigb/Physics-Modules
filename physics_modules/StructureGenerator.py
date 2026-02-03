@@ -116,7 +116,7 @@ def random_swap_c(input_list, swap_count):
 
     return [''.join(input_chars)]
 
-def phason_flip(input_list, sym_pres, flip_count, is_looped=False):
+def phason_flip(input_list, sym_pres, flip_count, is_looped=False, rev_flip=True, DEBUG=False):
     """
     Performs conditional swaps of 'A's and 'B's, with optional circular logic.
 
@@ -144,6 +144,7 @@ def phason_flip(input_list, sym_pres, flip_count, is_looped=False):
 
     current_string = input_list[0]
     n = len(current_string)
+    last_chosen_index = []
 
     for _ in range(flip_count):
         chars = list(current_string)
@@ -160,6 +161,8 @@ def phason_flip(input_list, sym_pres, flip_count, is_looped=False):
             break
         valid_swap_indices = []
         for index in potential_swap_indices:
+            if rev_flip==False and index in last_chosen_index:
+                continue
             temp_chars = chars[:]
 
             if is_looped and index == n - 1:
@@ -172,7 +175,9 @@ def phason_flip(input_list, sym_pres, flip_count, is_looped=False):
             has_pattern = "AAA" in temp_string or "BB" in temp_string
             
             if not has_pattern and is_looped and n >= 3:
-                if (temp_string[-1] == temp_string[0] == temp_string[1]) or \
+                if temp_string[-1] == "B" and temp_string[0] == "B":
+                    has_pattern = True
+                elif (temp_string[-1] == temp_string[0] == temp_string[1]) or \
                    (temp_string[-2] == temp_string[-1] == temp_string[0]):
                     has_pattern = True
             
@@ -180,9 +185,14 @@ def phason_flip(input_list, sym_pres, flip_count, is_looped=False):
                 valid_swap_indices.append(index)
             elif not sym_pres and has_pattern:
                 valid_swap_indices.append(index)
-
+        
+        # DEBUG PRINT HERE:
+        if DEBUG==True:
+            print(f"Available moves for {current_string}: {valid_swap_indices}")
+        
         if valid_swap_indices:
             chosen_index = random.choice(valid_swap_indices)
+            last_chosen_index.append(chosen_index)
             
             if is_looped and chosen_index == n - 1:
                 chars[chosen_index], chars[0] = chars[0], chars[chosen_index]
@@ -192,8 +202,10 @@ def phason_flip(input_list, sym_pres, flip_count, is_looped=False):
             current_string = "".join(chars)
         else:
             break
-
-    return [current_string]
+    if DEBUG==True:
+        return ([current_string], valid_swap_indices, last_chosen_index)
+    else:
+        return [current_string]
 
 
 
