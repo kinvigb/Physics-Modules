@@ -121,15 +121,21 @@ def phason_flip(input_list, sym_pres, flip_count, is_looped=False, rev_flip=True
     Performs conditional swaps of 'A's and 'B's, with optional circular logic.
 
     Args:
-        input_list (list): A list containing a single string of 'A's and 'B's.
-                           e.g., ['AABABA']
-        sym_pres (bool): A flag to control the swapping logic.
-                         - True: Swaps only if it DOES NOT create "AAA" or "BB".
-                         - False: Swaps only if it DOES create "AAA" or "BB".
-        flip_count (int): The desired number of swaps to perform.
-        is_looped (bool): If True, treats the string as a circular structure
-                          where the last character is adjacent to the first.
-                          Defaults to False.
+        input_list (list):  A list containing a single string of 'A's and 'B's.
+                             - e.g., ['AABABA']
+        sym_pres (bool):    A flag to control the swapping logic.
+                             - True: Swaps only if it DOES NOT create "AAA" or "BB".
+                             - False: Swaps only if it DOES create "AAA" or "BB".
+        flip_count (int):   The desired number of swaps to perform.
+        is_looped (bool):   If True, treats the string as a circular structure
+                            where the last character is adjacent to the first.
+                            Defaults to False.
+        rev_flip (bool):    If True allows the flipping functions to effectively 
+                            reverse flips when flip_count > 1, when false ensures 
+                            each flip is unique.
+        DEBUG (bool):       A simple toggle to enable debugging options, by default 
+                            false and ideally should not be used when running this 
+                            code for its intended purpose.
 
     Returns:
         list: A list with the new string. Terminates early if no valid
@@ -186,7 +192,6 @@ def phason_flip(input_list, sym_pres, flip_count, is_looped=False, rev_flip=True
             elif not sym_pres and has_pattern:
                 valid_swap_indices.append(index)
         
-        # DEBUG PRINT HERE:
         if DEBUG==True:
             print(f"Available moves for {current_string}: {valid_swap_indices}")
         
