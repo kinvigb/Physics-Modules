@@ -74,29 +74,37 @@ def block_periodic(length, block):
     structure = [block * int_multiplier]
     return structure[:length]
 
-def random_swap(input_list, swap_count):
+def random_swap(input_list, swap_count, rev_flip=True):
+    # Return immediately if no swaps needed
     if swap_count == 0:
         return input_list
-
     input_string = input_list[0]
     input_chars = list(input_string)
-
     indices_a = [i for i, x in enumerate(input_chars) if x == 'A']
     indices_b = [i for i, x in enumerate(input_chars) if x == 'B']
 
     for _ in range(swap_count):
-        if not indices_a or not indices_b:  # Check if either list is empty
+        if not indices_a and not indices_b:
             break
-        if random.choice([True, False]):
+        if indices_a and indices_b:
+            swap_a_to_b = random.choice([True, False])
+        elif indices_a:
+            swap_a_to_b = True
+        else:
+            swap_a_to_b = False
+
+        if swap_a_to_b:
             index_to_swap = random.choice(indices_a)
             input_chars[index_to_swap] = 'B'
             indices_a.remove(index_to_swap)
-            indices_b.append(index_to_swap)
+            if rev_flip:
+                indices_b.append(index_to_swap)
         else:
             index_to_swap = random.choice(indices_b)
             input_chars[index_to_swap] = 'A'
             indices_b.remove(index_to_swap)
-            indices_a.append(index_to_swap)
+            if rev_flip:
+                indices_a.append(index_to_swap)
 
     return [''.join(input_chars)]
 
@@ -141,77 +149,87 @@ def phason_flip(input_list, sym_pres, flip_count, is_looped=False, rev_flip=True
         list: A list with the new string. Terminates early if no valid
               swaps are found.
     """
+    import random
+
     if flip_count == 0:
         return input_list
         
     if not input_list or not input_list[0]:
         print("Warning: Input list is empty or contains an empty string.")
         return []
-
-    current_string = input_list[0]
-    n = len(current_string)
-    last_chosen_index = []
-
-    for _ in range(flip_count):
-        chars = list(current_string)
         
-        potential_swap_indices = []
-        for i in range(n - 1):
-            if chars[i] != chars[i+1]:
-                potential_swap_indices.append(i)
+    max_retries = 100
+    
+    for attempt in range(max_retries):
+        current_string = input_list[0]
+        n = len(current_string)
+        last_chosen_index = []
+        flips_done = 0
+        
+        for _ in range(flip_count):
+            chars = list(current_string)
+            potential_swap_indices = []
+            for i in range(n - 1):
+                if chars[i] != chars[i+1]:
+                    potential_swap_indices.append(i)
 
-        if is_looped and n > 1 and chars[n-1] != chars[0]:
-            potential_swap_indices.append(n-1)
+            if is_looped and n > 1 and chars[n-1] != chars[0]:
+                potential_swap_indices.append(n-1)
 
-        if not potential_swap_indices:
-            break
-        valid_swap_indices = []
-        for index in potential_swap_indices:
-            if rev_flip==False and index in last_chosen_index:
-                continue
-            temp_chars = chars[:]
+            if not potential_swap_indices:
+                break 
 
-            if is_looped and index == n - 1:
-                temp_chars[index], temp_chars[0] = temp_chars[0], temp_chars[index]
+            valid_swap_indices = []
+            for index in potential_swap_indices:
+                if rev_flip == False and index in last_chosen_index:
+                    continue
+                
+                temp_chars = chars[:]
+
+                if is_looped and index == n - 1:
+                    temp_chars[index], temp_chars[0] = temp_chars[0], temp_chars[index]
+                else:
+                    temp_chars[index], temp_chars[index+1] = temp_chars[index+1], temp_chars[index]
+                
+                temp_string = "".join(temp_chars)
+
+                has_pattern = "AAA" in temp_string or "BB" in temp_string
+                
+                if not has_pattern and is_looped and n >= 3:
+                    if temp_string[-1] == "B" and temp_string[0] == "B":
+                        has_pattern = True
+                    elif (temp_string[-1] == temp_string[0] == temp_string[1]) or \
+                       (temp_string[-2] == temp_string[-1] == temp_string[0]):
+                        has_pattern = True
+                
+                if sym_pres and not has_pattern:
+                    valid_swap_indices.append(index)
+                elif not sym_pres and has_pattern:
+                    valid_swap_indices.append(index)
+            
+            if valid_swap_indices:
+                chosen_index = random.choice(valid_swap_indices)
+                last_chosen_index.append(chosen_index)
+                
+                if is_looped and chosen_index == n - 1:
+                    chars[chosen_index], chars[0] = chars[0], chars[chosen_index]
+                else:
+                    chars[chosen_index], chars[chosen_index+1] = chars[chosen_index+1], chars[chosen_index]
+                
+                current_string = "".join(chars)
+                flips_done += 1
             else:
-                temp_chars[index], temp_chars[index+1] = temp_chars[index+1], temp_chars[index]
-            
-            temp_string = "".join(temp_chars)
-
-            has_pattern = "AAA" in temp_string or "BB" in temp_string
-            
-            if not has_pattern and is_looped and n >= 3:
-                if temp_string[-1] == "B" and temp_string[0] == "B":
-                    has_pattern = True
-                elif (temp_string[-1] == temp_string[0] == temp_string[1]) or \
-                   (temp_string[-2] == temp_string[-1] == temp_string[0]):
-                    has_pattern = True
-            
-            if sym_pres and not has_pattern:
-                valid_swap_indices.append(index)
-            elif not sym_pres and has_pattern:
-                valid_swap_indices.append(index)
+                break 
         
-        if DEBUG==True:
-            print(f"Available moves for {current_string}: {valid_swap_indices}")
-        
-        if valid_swap_indices:
-            chosen_index = random.choice(valid_swap_indices)
-            last_chosen_index.append(chosen_index)
+        # CHANGED HERE: Removed 'success' flag. Directly check if job is done.
+        if flips_done == flip_count:
             
-            if is_looped and chosen_index == n - 1:
-                chars[chosen_index], chars[0] = chars[0], chars[chosen_index]
+            if DEBUG:
+                return [current_string], valid_swap_indices, last_chosen_index
             else:
-                chars[chosen_index], chars[chosen_index+1] = chars[chosen_index+1], chars[chosen_index]
-            
-            current_string = "".join(chars)
-        else:
-            break
-    if DEBUG==True:
-        return ([current_string], valid_swap_indices, last_chosen_index)
-    else:
-        return [current_string]
-
+                return [current_string]
+    
+    raise RuntimeError(f"Error: Could not complete {flip_count} flips after {max_retries} attempts due to constraints.")
 
 
 
