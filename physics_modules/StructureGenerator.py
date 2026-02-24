@@ -191,16 +191,29 @@ def phason_flip(input_list, sym_pres, flip_count, is_looped=False, rev_flip=True
                 else:
                     temp_chars[index], temp_chars[index+1] = temp_chars[index+1], temp_chars[index]
                 
-                temp_string = "".join(temp_chars)
-
-                has_pattern = "AAA" in temp_string or "BB" in temp_string
+                idx1 = index
+                idx2 = 0 if (is_looped and index == n - 1) else index + 1
                 
-                if not has_pattern and is_looped and n >= 3:
-                    if temp_string[-1] == "B" and temp_string[0] == "B":
-                        has_pattern = True
-                    elif (temp_string[-1] == temp_string[0] == temp_string[1]) or \
-                       (temp_string[-2] == temp_string[-1] == temp_string[0]):
-                        has_pattern = True
+                has_pattern = False
+                for idx in (idx1, idx2):
+                    if temp_chars[idx] == "B":
+                        if is_looped and n >= 2:
+                            if temp_chars[(idx - 1) % n] == "B" or temp_chars[(idx + 1) % n] == "B":
+                                has_pattern = True
+                        else:
+                            if (idx > 0 and temp_chars[idx - 1] == "B") or (idx < n - 1 and temp_chars[idx + 1] == "B"):
+                                has_pattern = True
+                    elif temp_chars[idx] == "A":
+                        if is_looped and n >= 3:
+                            if (temp_chars[(idx - 2) % n] == "A" and temp_chars[(idx - 1) % n] == "A") or \
+                               (temp_chars[(idx - 1) % n] == "A" and temp_chars[(idx + 1) % n] == "A") or \
+                               (temp_chars[(idx + 1) % n] == "A" and temp_chars[(idx + 2) % n] == "A"):
+                                has_pattern = True
+                        else:
+                            if (idx >= 2 and temp_chars[idx - 2] == "A" and temp_chars[idx - 1] == "A") or \
+                               (idx >= 1 and idx < n - 1 and temp_chars[idx - 1] == "A" and temp_chars[idx + 1] == "A") or \
+                               (idx < n - 2 and temp_chars[idx + 1] == "A" and temp_chars[idx + 2] == "A"):
+                                has_pattern = True
                 
                 if sym_pres and not has_pattern:
                     valid_swap_indices.append(index)
@@ -230,10 +243,6 @@ def phason_flip(input_list, sym_pres, flip_count, is_looped=False, rev_flip=True
                 return [current_string]
     
     raise RuntimeError(f"Error: Could not complete {flip_count} flips after {max_retries} attempts due to constraints.")
-
-
-
-
 
 
 
