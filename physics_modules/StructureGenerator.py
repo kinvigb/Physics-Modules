@@ -78,6 +78,9 @@ def random_swap(input_list, swap_count, rev_flip=True):
     # Return immediately if no swaps needed
     if swap_count == 0:
         return input_list
+    if swap_count > len(input_list) and rev_flip == False:
+        raise ValueError("Swap count cannot be larger than structure size while rev_flip is False")
+        
     input_string = input_list[0]
     input_chars = list(input_string)
     indices_a = [i for i, x in enumerate(input_chars) if x == 'A']
@@ -152,6 +155,9 @@ def phason_flip(input_list, sym_pres, flip_count, is_looped=False, rev_flip=True
 
     if flip_count == 0:
         return input_list
+        
+    if swap_count > len(input_list) and rev_flip == False:
+        raise ValueError("Swap count cannot be larger than structure size while rev_flip is False")
         
     if not input_list or not input_list[0]:
         print("Warning: Input list is empty or contains an empty string.")
