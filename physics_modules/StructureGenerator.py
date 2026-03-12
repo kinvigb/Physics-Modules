@@ -149,7 +149,6 @@ def phason_flip(input_list, sym_pres, flip_count, is_looped=False, rev_flip=True
         list: A list with the new string. Terminates early if no valid
               swaps are found.
     """
-    import random
 
     if flip_count == 0:
         return input_list
